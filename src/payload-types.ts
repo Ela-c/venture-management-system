@@ -69,6 +69,12 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    ventures: Venture;
+    onboardingIntakes: OnboardingIntake;
+    founders: Founder;
+    agreements: Agreement;
+    dataRoomFiles: DataRoomFile;
+    activityLogs: ActivityLog;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +83,12 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    ventures: VenturesSelect<false> | VenturesSelect<true>;
+    onboardingIntakes: OnboardingIntakesSelect<false> | OnboardingIntakesSelect<true>;
+    founders: FoundersSelect<false> | FoundersSelect<true>;
+    agreements: AgreementsSelect<false> | AgreementsSelect<true>;
+    dataRoomFiles: DataRoomFilesSelect<false> | DataRoomFilesSelect<true>;
+    activityLogs: ActivityLogsSelect<false> | ActivityLogsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -84,9 +96,15 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  globals: {};
-  globalsSelect: {};
-  locale: null;
+  globals: {
+    settings: Setting;
+    lookups: Lookup;
+  };
+  globalsSelect: {
+    settings: SettingsSelect<false> | SettingsSelect<true>;
+    lookups: LookupsSelect<false> | LookupsSelect<true>;
+  };
+  locale: 'en' | 'km';
   user: User & {
     collection: 'users';
   };
@@ -121,7 +139,7 @@ export interface User {
   id: string;
   first_name: string;
   last_name: string;
-  role: 'admin' | 'founder' | 'investor' | 'mentor';
+  role: 'founder' | 'miv_analyst' | 'admin';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -234,6 +252,153 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ventures".
+ */
+export interface Venture {
+  id: string;
+  name_en: string;
+  name_km?: string | null;
+  country: string;
+  description_en?: string | null;
+  description_km?: string | null;
+  founders?:
+    | {
+        user: string | User;
+        email: string;
+        fullName: string;
+        id?: string | null;
+      }[]
+    | null;
+  latestIntake?: (string | null) | OnboardingIntake;
+  agreements?: (string | Agreement)[] | null;
+  triageTrack?: ('unassigned' | 'fast' | 'slow') | null;
+  triageRationale?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingIntakes".
+ */
+export interface OnboardingIntake {
+  id: string;
+  venture?: (string | null) | Venture;
+  ventureName_en: string;
+  ventureName_km?: string | null;
+  country: string;
+  wss: {
+    seeing: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
+    hearing: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
+    walking: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
+    cognition: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
+    selfCare: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
+    communication: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
+  };
+  disabilityFlag?: boolean | null;
+  registration?: {
+    number?: string | null;
+    country?: string | null;
+    legalType?: string | null;
+    yearEstablished?: number | null;
+  };
+  impactAreas?: ('agri' | 'gender' | 'climate')[] | null;
+  founders?:
+    | {
+        fullName: string;
+        email: string;
+        phone?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  financials?: {
+    currency?: string | null;
+    lastFYRevenue?: number | null;
+    avgMonthlyRevenue?: number | null;
+  };
+  gedsi?: {
+    hasPolicy?: boolean | null;
+    notes?: string | null;
+  };
+  triageTrack?: ('unassigned' | 'fast' | 'slow') | null;
+  triageRationale?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agreements".
+ */
+export interface Agreement {
+  id: string;
+  venture?: (string | null) | Venture;
+  type: 'NDA' | 'MOU';
+  status: 'not_requested' | 'requested' | 'sent' | 'signed' | 'verified';
+  provider?: string | null;
+  providerRequestId?: string | null;
+  providerEnvelopeId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "founders".
+ */
+export interface Founder {
+  id: string;
+  fullName: string;
+  email: string;
+  phone?: string | null;
+  venture?: (string | null) | Venture;
+  user?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dataRoomFiles".
+ */
+export interface DataRoomFile {
+  id: string;
+  venture?: (string | null) | Venture;
+  category: 'pitch' | 'financials' | 'policies' | 'registration' | 'other';
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "activityLogs".
+ */
+export interface ActivityLog {
+  id: string;
+  actor?: (string | null) | User;
+  action: string;
+  entity: string;
+  entityId?: string | null;
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  timestamp?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -246,6 +411,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'ventures';
+        value: string | Venture;
+      } | null)
+    | ({
+        relationTo: 'onboardingIntakes';
+        value: string | OnboardingIntake;
+      } | null)
+    | ({
+        relationTo: 'founders';
+        value: string | Founder;
+      } | null)
+    | ({
+        relationTo: 'agreements';
+        value: string | Agreement;
+      } | null)
+    | ({
+        relationTo: 'dataRoomFiles';
+        value: string | DataRoomFile;
+      } | null)
+    | ({
+        relationTo: 'activityLogs';
+        value: string | ActivityLog;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -409,6 +598,147 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ventures_select".
+ */
+export interface VenturesSelect<T extends boolean = true> {
+  name_en?: T;
+  name_km?: T;
+  country?: T;
+  description_en?: T;
+  description_km?: T;
+  founders?:
+    | T
+    | {
+        user?: T;
+        email?: T;
+        fullName?: T;
+        id?: T;
+      };
+  latestIntake?: T;
+  agreements?: T;
+  triageTrack?: T;
+  triageRationale?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "onboardingIntakes_select".
+ */
+export interface OnboardingIntakesSelect<T extends boolean = true> {
+  venture?: T;
+  ventureName_en?: T;
+  ventureName_km?: T;
+  country?: T;
+  wss?:
+    | T
+    | {
+        seeing?: T;
+        hearing?: T;
+        walking?: T;
+        cognition?: T;
+        selfCare?: T;
+        communication?: T;
+      };
+  disabilityFlag?: T;
+  registration?:
+    | T
+    | {
+        number?: T;
+        country?: T;
+        legalType?: T;
+        yearEstablished?: T;
+      };
+  impactAreas?: T;
+  founders?:
+    | T
+    | {
+        fullName?: T;
+        email?: T;
+        phone?: T;
+        id?: T;
+      };
+  financials?:
+    | T
+    | {
+        currency?: T;
+        lastFYRevenue?: T;
+        avgMonthlyRevenue?: T;
+      };
+  gedsi?:
+    | T
+    | {
+        hasPolicy?: T;
+        notes?: T;
+      };
+  triageTrack?: T;
+  triageRationale?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "founders_select".
+ */
+export interface FoundersSelect<T extends boolean = true> {
+  fullName?: T;
+  email?: T;
+  phone?: T;
+  venture?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agreements_select".
+ */
+export interface AgreementsSelect<T extends boolean = true> {
+  venture?: T;
+  type?: T;
+  status?: T;
+  provider?: T;
+  providerRequestId?: T;
+  providerEnvelopeId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dataRoomFiles_select".
+ */
+export interface DataRoomFilesSelect<T extends boolean = true> {
+  venture?: T;
+  category?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "activityLogs_select".
+ */
+export interface ActivityLogsSelect<T extends boolean = true> {
+  actor?: T;
+  action?: T;
+  entity?: T;
+  entityId?: T;
+  metadata?: T;
+  timestamp?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -438,6 +768,100 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings".
+ */
+export interface Setting {
+  id: string;
+  enableSlack?: boolean | null;
+  enableESign?: boolean | null;
+  locales?: ('en' | 'km')[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lookups".
+ */
+export interface Lookup {
+  id: string;
+  sectors?:
+    | {
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  impactAreas?:
+    | {
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  countries?:
+    | {
+        code: string;
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  currencies?:
+    | {
+        code: string;
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings_select".
+ */
+export interface SettingsSelect<T extends boolean = true> {
+  enableSlack?: T;
+  enableESign?: T;
+  locales?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lookups_select".
+ */
+export interface LookupsSelect<T extends boolean = true> {
+  sectors?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  impactAreas?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  countries?:
+    | T
+    | {
+        code?: T;
+        name?: T;
+        id?: T;
+      };
+  currencies?:
+    | T
+    | {
+        code?: T;
+        name?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,23 +1,25 @@
-# Payload Blank Template
-
-This template comes configured with the bare minimum to get started on anything you need.
-
-## Quick start
-
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+# MIV Venture Management System
 
 ## Quick Start - local setup
 
 To spin up this template locally, follow these steps:
 
-### Clone
-
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
-
 ### Development
 
 1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+
+## Backend Stage 1 (MIV Intake)
+
+- Env vars: PAYLOAD_SECRET, DATABASE_URI, SLACK_WEBHOOK_URL (optional), ESIGN_PROVIDER_API_KEY (optional)
+- Endpoints:
+  - POST /api/intake/submit
+  - GET /api/ventures/:id/summary
+  - POST /api/ventures/:id/assign-track
+  - POST /api/agreements/:id/send-signature
+  - POST /api/uploads/signed-url
+  - GET /api/lookups
+
+See tests/api.http for ready-to-run examples. 2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
 
 3. `pnpm install && pnpm dev` to install dependencies and start the dev server
 4. open `http://localhost:3000` to open the app in your browser

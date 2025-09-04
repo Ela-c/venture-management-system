@@ -9,6 +9,14 @@ import sharp from 'sharp'
 
 import { Users } from './collections/users'
 import { Media } from './collections/media'
+import { Ventures } from './collections/ventures'
+import { OnboardingIntakes } from './collections/onboardingIntakes'
+import { Agreements } from './collections/agreements'
+import { Founders } from './collections/founders'
+import { DataRoomFiles } from './collections/dataRoomFiles'
+import { ActivityLogs } from './collections/activityLogs'
+import { Settings } from './globals/settings'
+import { Lookups } from './globals/lookups'
 import { getServerSideURL } from './lib/get-url'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -20,7 +28,21 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  localization: {
+    locales: ['en', 'km'],
+    defaultLocale: 'en',
+  },
+  collections: [
+    Users,
+    Media,
+    Ventures,
+    OnboardingIntakes,
+    Founders,
+    Agreements,
+    DataRoomFiles,
+    ActivityLogs,
+  ],
+  globals: [Settings, Lookups],
   cors: [getServerSideURL()].filter(Boolean),
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
@@ -36,25 +58,24 @@ export default buildConfig({
     // storage-adapter-placeholder
   ],
   onInit: async (payload) => {
-    // This function runs when the server first initializes
-    // Check if there are any users, if not, create a default admin user
+    // Ensure a default admin exists (first-run only)
     const users = await payload.find({
       collection: 'users',
-      limit: 0,
+      where: { email: { equals: 'admin@example.com' } },
+      limit: 1,
     })
-
     if (users.totalDocs === 0) {
-      const res = await payload.create({
+      await payload.create({
         collection: 'users',
         data: {
           email: 'admin@example.com',
           password: 'changeme123',
-          first_name: 'Super',
-          last_name: 'Admin',
+          first_name: 'Admin',
+          last_name: 'User',
           role: 'admin',
         },
       })
-      console.log('Default admin user created:', res)
+      console.log('Seeded default admin user admin@example.com / changeme123')
     }
   },
 })
