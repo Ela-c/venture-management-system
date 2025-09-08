@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { CollectionBeforeChangeHook, CollectionAfterChangeHook } from 'payload'
+// EmailJS service removed - intake notifications temporarily disabled
 
 export const setDisabilityFlag: CollectionBeforeChangeHook = async ({ data }: any) => {
   if (data?.wss) {
@@ -39,4 +40,9 @@ export const afterIntakeCreate: CollectionAfterChangeHook = async ({ doc, operat
   await payload.create({ collection: 'activityLogs' as any, data: {
     action: 'intake.created', entity: 'onboardingIntakes', entityId: String((doc as any).id), timestamp: new Date().toISOString(),
   } })
+
+  // TODO: Implement intake notification emails using the new Nodemailer email service
+  // Email notifications for intake submissions have been temporarily disabled
+  // during the migration from EmailJS to Nodemailer
+  console.log('Intake created successfully. Email notifications currently disabled.')
 }
