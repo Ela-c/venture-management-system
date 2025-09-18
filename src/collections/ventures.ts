@@ -13,10 +13,11 @@ export const Ventures: CollectionConfig = {
   },
   fields: [
     { name: 'name_en', type: 'text', required: true, label: 'Venture Name (EN)' },
-    { name: 'name_km', type: 'text', label: 'Venture Name (KM)' },
     { name: 'country', type: 'text', required: true },
+    { name: 'city', type: 'text', required: true },
+    { name: 'sector', type: 'text', required: true },
+    { name: 'website', type: 'text' },
     { name: 'description_en', type: 'textarea' },
-    { name: 'description_km', type: 'textarea' },
     {
       name: 'founders',
       type: 'array',
@@ -26,15 +27,6 @@ export const Ventures: CollectionConfig = {
         { name: 'email', type: 'email', required: true },
         { name: 'fullName', type: 'text', required: true },
       ],
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { name: 'latestIntake', type: 'relationship', relationTo: 'onboardingIntakes' as any },
-    {
-      name: 'agreements',
-      type: 'relationship',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      relationTo: 'agreements' as any,
-      hasMany: true,
     },
     {
       name: 'triageTrack',
