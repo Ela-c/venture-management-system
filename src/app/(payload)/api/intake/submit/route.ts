@@ -11,10 +11,8 @@ const FounderSchema = z.object({
 
 const IntakeSchema = z.object({
   ventureName_en: z.string().min(1),
-  ventureName_km: z.string().optional(),
   country: z.string().min(1),
   description_en: z.string().optional(),
-  description_km: z.string().optional(),
   wss: z.object({
     seeing: z.enum(['no_difficulty', 'some_difficulty', 'a_lot_of_difficulty', 'cannot_do_at_all']),
     hearing: z.enum([
@@ -111,9 +109,7 @@ export async function POST(req: Request) {
       collection: 'ventures',
       data: {
         name_en: data.ventureName_en,
-        name_km: data.ventureName_km,
         description_en: data.description_en,
-        description_km: data.description_km,
         country: data.country,
         triageTrack: data.triageTrack ?? 'unassigned',
         triageRationale: data.triageRationale,

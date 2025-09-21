@@ -43,7 +43,8 @@ export default buildConfig({
     ActivityLogs,
   ],
   globals: [Settings, Lookups],
-  cors: [getServerSideURL()].filter(Boolean),
+  // cors: [getServerSideURL()].filter(Boolean),
+  cors: '*',
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

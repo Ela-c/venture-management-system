@@ -256,21 +256,21 @@ export interface Media {
  */
 export interface Venture {
   id: string;
-  name_en: string;
-  name_km?: string | null;
+  name: string;
   country: string;
-  description_en?: string | null;
-  description_km?: string | null;
+  city: string;
+  sector: string;
+  website?: string | null;
+  description?: string | null;
   founders?:
     | {
-        user: string | User;
         email: string;
+        role: string;
+        phone: string;
         fullName: string;
         id?: string | null;
       }[]
     | null;
-  latestIntake?: (string | null) | OnboardingIntake;
-  agreements?: (string | Agreement)[] | null;
   triageTrack?: ('unassigned' | 'fast' | 'slow') | null;
   triageRationale?: string | null;
   updatedAt: string;
@@ -283,9 +283,6 @@ export interface Venture {
 export interface OnboardingIntake {
   id: string;
   venture?: (string | null) | Venture;
-  ventureName_en: string;
-  ventureName_km?: string | null;
-  country: string;
   wss: {
     seeing: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
     hearing: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
@@ -295,12 +292,6 @@ export interface OnboardingIntake {
     communication: 'no_difficulty' | 'some_difficulty' | 'a_lot_of_difficulty' | 'cannot_do_at_all';
   };
   disabilityFlag?: boolean | null;
-  registration?: {
-    number?: string | null;
-    country?: string | null;
-    legalType?: string | null;
-    yearEstablished?: number | null;
-  };
   impactAreas?: ('agri' | 'gender' | 'climate')[] | null;
   founders?:
     | {
@@ -314,13 +305,28 @@ export interface OnboardingIntake {
     currency?: string | null;
     lastFYRevenue?: number | null;
     avgMonthlyRevenue?: number | null;
+    currentCashBalance?: number | null;
+    stage?: string | null;
+    notes?: string | null;
   };
   gedsi?: {
     hasPolicy?: boolean | null;
     notes?: string | null;
   };
-  triageTrack?: ('unassigned' | 'fast' | 'slow') | null;
-  triageRationale?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "founders".
+ */
+export interface Founder {
+  id: string;
+  fullName: string;
+  email: string;
+  phone?: string | null;
+  venture?: (string | null) | Venture;
+  user?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -336,20 +342,6 @@ export interface Agreement {
   provider?: string | null;
   providerRequestId?: string | null;
   providerEnvelopeId?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "founders".
- */
-export interface Founder {
-  id: string;
-  fullName: string;
-  email: string;
-  phone?: string | null;
-  venture?: (string | null) | Venture;
-  user?: (string | null) | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -601,21 +593,21 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "ventures_select".
  */
 export interface VenturesSelect<T extends boolean = true> {
-  name_en?: T;
-  name_km?: T;
+  name?: T;
   country?: T;
-  description_en?: T;
-  description_km?: T;
+  city?: T;
+  sector?: T;
+  website?: T;
+  description?: T;
   founders?:
     | T
     | {
-        user?: T;
         email?: T;
+        role?: T;
+        phone?: T;
         fullName?: T;
         id?: T;
       };
-  latestIntake?: T;
-  agreements?: T;
   triageTrack?: T;
   triageRationale?: T;
   updatedAt?: T;
@@ -627,9 +619,6 @@ export interface VenturesSelect<T extends boolean = true> {
  */
 export interface OnboardingIntakesSelect<T extends boolean = true> {
   venture?: T;
-  ventureName_en?: T;
-  ventureName_km?: T;
-  country?: T;
   wss?:
     | T
     | {
@@ -641,14 +630,6 @@ export interface OnboardingIntakesSelect<T extends boolean = true> {
         communication?: T;
       };
   disabilityFlag?: T;
-  registration?:
-    | T
-    | {
-        number?: T;
-        country?: T;
-        legalType?: T;
-        yearEstablished?: T;
-      };
   impactAreas?: T;
   founders?:
     | T
@@ -664,6 +645,9 @@ export interface OnboardingIntakesSelect<T extends boolean = true> {
         currency?: T;
         lastFYRevenue?: T;
         avgMonthlyRevenue?: T;
+        currentCashBalance?: T;
+        stage?: T;
+        notes?: T;
       };
   gedsi?:
     | T
@@ -671,8 +655,6 @@ export interface OnboardingIntakesSelect<T extends boolean = true> {
         hasPolicy?: T;
         notes?: T;
       };
-  triageTrack?: T;
-  triageRationale?: T;
   updatedAt?: T;
   createdAt?: T;
 }

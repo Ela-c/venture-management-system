@@ -8,12 +8,6 @@ const wssOptions: { label: string; value: string }[] = [
   { label: 'Cannot do at all', value: 'cannot_do_at_all' },
 ] as const
 
-const triageOptions: { label: string; value: string }[] = [
-  { label: 'Unassigned', value: 'unassigned' },
-  { label: 'Fast', value: 'fast' },
-  { label: 'Slow', value: 'slow' },
-] as const
-
 export const OnboardingIntakes: CollectionConfig = {
   slug: 'onboardingIntakes',
   access: {
@@ -28,11 +22,8 @@ export const OnboardingIntakes: CollectionConfig = {
     afterChange: [afterIntakeCreate],
   },
   fields: [
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  { name: 'venture', type: 'relationship', relationTo: 'ventures' as any },
-    { name: 'ventureName_en', type: 'text', required: true },
-    { name: 'ventureName_km', type: 'text' },
-    { name: 'country', type: 'text', required: true },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    { name: 'venture', type: 'relationship', relationTo: 'ventures' as any },
     {
       name: 'wss',
       type: 'group',
@@ -46,16 +37,6 @@ export const OnboardingIntakes: CollectionConfig = {
       ],
     },
     { name: 'disabilityFlag', type: 'checkbox', defaultValue: false },
-    {
-      name: 'registration',
-      type: 'group',
-      fields: [
-        { name: 'number', type: 'text' },
-        { name: 'country', type: 'text' },
-        { name: 'legalType', type: 'text' },
-        { name: 'yearEstablished', type: 'number', min: 1900, max: 2100 },
-      ],
-    },
     {
       name: 'impactAreas',
       type: 'select',
@@ -82,6 +63,9 @@ export const OnboardingIntakes: CollectionConfig = {
         { name: 'currency', type: 'text' },
         { name: 'lastFYRevenue', type: 'number' },
         { name: 'avgMonthlyRevenue', type: 'number' },
+        { name: 'currentCashBalance', type: 'number' },
+        { name: 'stage', type: 'text' },
+        { name: 'notes', type: 'text' },
       ],
     },
     {
@@ -92,8 +76,6 @@ export const OnboardingIntakes: CollectionConfig = {
         { name: 'notes', type: 'textarea' },
       ],
     },
-  { name: 'triageTrack', type: 'select', options: triageOptions, defaultValue: 'unassigned' },
-    { name: 'triageRationale', type: 'textarea' },
   ],
 }
 
