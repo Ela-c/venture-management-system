@@ -1,4 +1,4 @@
-### Submit Intake
+### Submit Intake (with Email Notifications)
 POST http://localhost:3000/api/intake/submit
 Content-Type: application/json
 
@@ -49,3 +49,17 @@ Content-Type: application/json
 
 ### Upload file (replace URL)
 # curl -T ./doc.pdf "REPLACE_URL_FROM_PREVIOUS_RESPONSE"
+
+### Test Email Configuration
+GET http://localhost:3000/api/email/test-config
+
+### Send Test Email
+POST http://localhost:3000/api/email/test
+Content-Type: application/json
+
+{
+  "testEmail": "your-email@example.com"
+}
+
+### Check Intake Status (with Email Logs)
+GET http://localhost:3000/api/intake/submit?id=REPLACE_INTAKE_ID
