@@ -185,6 +185,7 @@ MONGODB_DB_NAME=miv
 SERVER_URL=http://localhost:4000
 PAYLOAD_PUBLIC_SERVER_URL=http://localhost:4000
 WEB_APP_ORIGIN=http://localhost:3000
+ALLOWED_ORIGINS=http://localhost:3000
 
 # Auth (example)
 JWT_EXPIRY=7d
@@ -204,6 +205,33 @@ NEXT_PUBLIC_API_URL=http://localhost:4000
 ```
 
 > If you use MinIO locally, also run the MinIO service (see `docker-compose.yml`) and create the bucket defined in `S3_BUCKET`.
+
+### Using as Backend for a Separate Frontend
+
+When your frontend runs on a different origin (e.g., `http://localhost:3000`) and you want cookie-based sessions:
+
+- Set `ALLOWED_ORIGINS` to a comma-separated list of allowed origins (e.g., `http://localhost:3000`).
+- The API sets CORS headers and supports credentials via a middleware for `'/api/*'` routes.
+- Auth cookie `payload-token` is issued with `SameSite=None` and `Secure` in production, allowing cross-site use.
+- From the frontend, always send requests with credentials enabled:
+
+```ts
+// fetch example
+await fetch('http://localhost:4000/api/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, password }),
+  credentials: 'include',
+})
+
+// axios example
+axios.post('http://localhost:4000/api/auth/login', { email, password }, { withCredentials: true })
+```
+
+Notes:
+
+- Browsers require `Secure` for `SameSite=None`; use HTTPS in production (or trusted localhost in dev).
+- Ensure your frontend XHR base URL points to the API origin and includes credentials.
 
 ---
 

@@ -17,9 +17,13 @@ import { DataRoomFiles } from './collections/dataRoomFiles'
 import { ActivityLogs } from './collections/activityLogs'
 import { Settings } from './globals/settings'
 import { Lookups } from './globals/lookups'
-import { getServerSideURL } from './lib/get-url'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean)
 
 export default buildConfig({
   admin: {
@@ -43,8 +47,10 @@ export default buildConfig({
     ActivityLogs,
   ],
   globals: [Settings, Lookups],
-  // cors: [getServerSideURL()].filter(Boolean),
-  cors: '*',
+  // Explicit origins are required when sending credentials (cookies)
+  cors: allowedOrigins,
+  // Allow CSRF from the same set of origins when using cookies
+  csrf: allowedOrigins,
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
